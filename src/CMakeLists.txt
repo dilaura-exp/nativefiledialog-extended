@@ -1,4 +1,4 @@
-set(TARGET_NAME nfd)
+set(PROJECT_NAME nfd)
 
 set(PUBLIC_HEADER_FILES
   include/nfd.h
@@ -57,14 +57,14 @@ if(nfd_PLATFORM STREQUAL PLATFORM_MACOS)
 endif()
 
 # Define the library
-add_library(${TARGET_NAME} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} ${SOURCE_FILES})
 
 if (BUILD_SHARED_LIBS)
-  target_compile_definitions(${TARGET_NAME} PRIVATE NFD_EXPORT INTERFACE NFD_SHARED)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE NFD_EXPORT INTERFACE NFD_SHARED)
 endif ()
 
 # Allow includes from include/
-target_include_directories(${TARGET_NAME}
+target_include_directories(${PROJECT_NAME}
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
@@ -72,39 +72,39 @@ target_include_directories(${TARGET_NAME}
 
 if(nfd_PLATFORM STREQUAL PLATFORM_LINUX)
   if(NOT NFD_PORTAL)
-    target_include_directories(${TARGET_NAME}
+    target_include_directories(${PROJECT_NAME}
       PRIVATE ${GTK3_INCLUDE_DIRS})
-    target_link_libraries(${TARGET_NAME}
+    target_link_libraries(${PROJECT_NAME}
       PRIVATE ${GTK3_LINK_LIBRARIES})
   else()
-    target_include_directories(${TARGET_NAME}
+    target_include_directories(${PROJECT_NAME}
       PRIVATE ${DBUS_INCLUDE_DIRS})
-    target_link_libraries(${TARGET_NAME}
+    target_link_libraries(${PROJECT_NAME}
       PRIVATE ${DBUS_LINK_LIBRARIES})
-    target_compile_definitions(${TARGET_NAME}
+    target_compile_definitions(${PROJECT_NAME}
       PUBLIC NFD_PORTAL)
   endif()
 
   option(NFD_APPEND_EXTENSION "Automatically append file extension to an extensionless selection in SaveDialog()" OFF)
   if(NFD_APPEND_EXTENSION)
-    target_compile_definitions(${TARGET_NAME} PRIVATE NFD_APPEND_EXTENSION)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE NFD_APPEND_EXTENSION)
   endif()
 endif()
 
 if(nfd_PLATFORM STREQUAL PLATFORM_MACOS)
   if(NFD_USE_ALLOWEDCONTENTTYPES)
-    target_link_libraries(${TARGET_NAME} PRIVATE ${APPKIT_LIBRARY} ${UNIFORMTYPEIDENTIFIERS_LIBRARY})
-    target_compile_definitions(${TARGET_NAME} PRIVATE NFD_MACOS_ALLOWEDCONTENTTYPES=1)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${APPKIT_LIBRARY} ${UNIFORMTYPEIDENTIFIERS_LIBRARY})
+    target_compile_definitions(${PROJECT_NAME} PRIVATE NFD_MACOS_ALLOWEDCONTENTTYPES=1)
   else()
-    target_link_libraries(${TARGET_NAME} PRIVATE ${APPKIT_LIBRARY})
-    target_compile_definitions(${TARGET_NAME} PRIVATE NFD_MACOS_ALLOWEDCONTENTTYPES=0)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${APPKIT_LIBRARY})
+    target_compile_definitions(${PROJECT_NAME} PRIVATE NFD_MACOS_ALLOWEDCONTENTTYPES=0)
   endif()
 endif()
 
 if(nfd_COMPILER STREQUAL COMPILER_MSVC)
   string(REPLACE "/EHsc" "/EHs-c-" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
   string(REPLACE "/GR" "/GR-" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-  set_property(TARGET ${TARGET_NAME} APPEND_STRING PROPERTY STATIC_LIBRARY_OPTIONS /NODEFAULTLIB)
+  set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY STATIC_LIBRARY_OPTIONS /NODEFAULTLIB)
 endif()
 
 if(nfd_COMPILER STREQUAL COMPILER_CLANGCL)
@@ -113,10 +113,10 @@ if(nfd_COMPILER STREQUAL COMPILER_CLANGCL)
 endif()
 
 if(nfd_COMPILER STREQUAL COMPILER_GNU)
-  target_compile_options(${TARGET_NAME} PRIVATE -nostdlib -fno-exceptions -fno-rtti)
+  target_compile_options(${PROJECT_NAME} PRIVATE -nostdlib -fno-exceptions -fno-rtti)
 endif()
 
-set_target_properties(${TARGET_NAME} PROPERTIES
+set_target_properties(${PROJECT_NAME} PROPERTIES
                                        PUBLIC_HEADER "${PUBLIC_HEADER_FILES}"
                                        VERSION ${PROJECT_VERSION}
                                        SOVERSION ${PROJECT_VERSION_MAJOR})
@@ -124,12 +124,12 @@ set_target_properties(${TARGET_NAME} PROPERTIES
 if (NFD_INSTALL)
   include(GNUInstallDirs)
 
-  install(TARGETS ${TARGET_NAME} EXPORT ${TARGET_NAME}-export
+  install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}-export
     LIBRARY DESTINATION ${LIB_INSTALL_DIR} ARCHIVE DESTINATION ${LIB_INSTALL_DIR} PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}    
   )
-  install(EXPORT ${TARGET_NAME}-export
-    DESTINATION lib/cmake/${TARGET_NAME}
-    NAMESPACE ${TARGET_NAME}::
-    FILE ${TARGET_NAME}-config.cmake
+  install(EXPORT ${PROJECT_NAME}-export
+    DESTINATION lib/cmake/${PROJECT_NAME}
+    NAMESPACE ${PROJECT_NAME}::
+    FILE ${PROJECT_NAME}-config.cmake
   )
 endif()
