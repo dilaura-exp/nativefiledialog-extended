@@ -5,3 +5,16 @@
 
 # Mac OS X rubbish
 .DS_Store
+*.vcxproj
+src/nfd.dir/
+src/Debug/
+src/Release/
+src/Dist/
+*.filters
+cmake_install.cmake
+CMakeFiles/generate.stamp
+CMakeFiles/generate.stamp.depend
+src/cmake_install.cmake
+src/nfd.vcxproj.user
+src/CMakeFiles/generate.stamp
+src/CMakeFiles/generate.stamp.depend
